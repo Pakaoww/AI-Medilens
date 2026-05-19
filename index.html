@@ -1,0 +1,762 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MediLens — เข้าใจผลตรวจของคุณ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght,SOFT@9..144,300..700,50&family=Outfit:wght@300..600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+
+:root{
+  --bg:#f6f4ef;
+  --surface:#ffffff;
+  --primary:#2a6f4e;
+  --primary-light:#e5f2ec;
+  --primary-dark:#1e5240;
+  --accent:#d4735e;
+  --accent-light:#fce8e4;
+  --text:#1a1a1e;
+  --text-muted:#7c7a78;
+  --border:#e3dfd8;
+  --shadow:0 1px 3px rgba(0,0,0,.04),0 4px 16px rgba(0,0,0,.04);
+  --radius:16px;
+  --radius-sm:10px;
+  --font-display:'Fraunces',Georgia,serif;
+  --font-body:'Outfit',system-ui,sans-serif;
+  --container:1200px;
+  --nav-h:68px;
+}
+html{scroll-behavior:smooth}
+body{
+  font-family:var(--font-body);
+  background:var(--bg);
+  color:var(--text);
+  line-height:1.6;
+  -webkit-font-smoothing:antialiased;
+}
+::selection{background:var(--primary);color:#fff}
+
+/* ── Navigation ── */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:100;
+  height:var(--nav-h);
+  background:rgba(246,244,239,.85);
+  backdrop-filter:blur(14px) saturate(1.2);
+  border-bottom:1px solid var(--border);
+}
+nav .inner{
+  max-width:var(--container);margin:0 auto;
+  display:flex;align-items:center;justify-content:space-between;
+  height:100%;padding:0 28px;
+}
+nav .logo{
+  font-family:var(--font-display);font-size:1.2rem;font-weight:600;
+  color:var(--primary);letter-spacing:-.01em;
+  display:flex;align-items:center;gap:8px;
+}
+nav .logo mark{
+  background:var(--primary);color:#fff;padding:2px 8px;
+  border-radius:6px;font-size:.75rem;font-weight:500;
+  font-family:var(--font-body);letter-spacing:.02em;
+}
+nav .links{display:flex;gap:32px;list-style:none}
+nav .links a{
+  text-decoration:none;font-size:.875rem;font-weight:500;
+  color:var(--text-muted);transition:color .25s;position:relative;
+}
+nav .links a::after{
+  content:'';position:absolute;bottom:-4px;left:0;width:0;height:2px;
+  background:var(--primary);transition:width .35s;
+}
+nav .links a:hover{color:var(--text)}
+nav .links a:hover::after{width:100%}
+
+/* ── Hero ── */
+.hero{
+  padding:calc(var(--nav-h) + 72px) 28px 80px;
+  max-width:var(--container);margin:0 auto;
+  display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center;
+  opacity:0;animation:fadeUp .7s .15s forwards;
+}
+.hero-text h1{
+  font-family:var(--font-display);font-size:clamp(2.4rem,5vw,3.6rem);
+  font-weight:500;line-height:1.15;letter-spacing:-.02em;
+  margin-bottom:20px;
+}
+.hero-text h1 em{font-style:normal;color:var(--primary)}
+.hero-text p{
+  font-size:1.05rem;color:var(--text-muted);max-width:480px;
+  margin-bottom:32px;line-height:1.7;
+}
+.hero-text .cta-group{display:flex;gap:12px;flex-wrap:wrap}
+.cta-primary,.cta-secondary{
+  padding:12px 28px;border-radius:100px;font-weight:500;
+  font-size:.925rem;cursor:pointer;transition:all .3s;border:none;
+  font-family:var(--font-body);text-decoration:none;display:inline-flex;align-items:center;gap:8px;
+}
+.cta-primary{
+  background:var(--primary);color:#fff;
+  box-shadow:0 2px 12px rgba(42,111,78,.25);
+}
+.cta-primary:hover{background:var(--primary-dark);transform:translateY(-2px);box-shadow:0 6px 24px rgba(42,111,78,.3)}
+.cta-secondary{
+  background:transparent;color:var(--text);border:1px solid var(--border);
+}
+.cta-secondary:hover{background:var(--primary-light);border-color:var(--primary);color:var(--primary)}
+.hero-visual{
+  display:flex;justify-content:center;align-items:center;position:relative;
+}
+.hero-card{
+  background:var(--surface);border-radius:var(--radius);
+  box-shadow:var(--shadow);padding:28px;width:100%;max-width:420px;
+  border:1px solid var(--border);position:relative;
+}
+.hero-card .stat-row{display:flex;gap:12px;margin-bottom:20px}
+.hero-card .stat{
+  flex:1;padding:14px 12px;border-radius:var(--radius-sm);
+  background:var(--primary-light);text-align:center;
+}
+.hero-card .stat span{display:block;font-size:.72rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:2px}
+.hero-card .stat strong{font-family:var(--font-display);font-size:1.5rem;font-weight:600;color:var(--primary)}
+.hero-card .bar-item{margin-bottom:14px}
+.hero-card .bar-item .label{display:flex;justify-content:space-between;font-size:.8rem;margin-bottom:4px}
+.hero-card .bar-item .label span:last-child{font-weight:500;color:var(--primary)}
+.hero-card .bar-track{height:6px;background:var(--border);border-radius:4px;overflow:hidden}
+.hero-card .bar-fill{height:100%;border-radius:4px;background:var(--primary);width:0%;transition:width 1s .8s}
+.hero-card .bar-fill.w1{width:78%}
+.hero-card .bar-fill.w2{width:92%}
+.hero-card .bar-fill.w3{width:64%}
+.how-step{display:flex;align-items:center;gap:14px}
+.how-step-num{
+  width:32px;height:32px;border-radius:50%;flex-shrink:0;
+  background:var(--primary);color:#fff;
+  display:flex;align-items:center;justify-content:center;
+  font-size:.8rem;font-weight:700;font-family:var(--font-display);
+}
+.how-step-title{font-size:.88rem;font-weight:600;color:var(--text);margin-bottom:2px}
+.how-step-desc{font-size:.76rem;color:var(--text-muted)}
+.how-connector{
+  width:2px;height:18px;background:var(--border);
+  margin-left:15px;border-radius:2px;
+}
+
+@keyframes pulseDot{0%,100%{opacity:1}50%{opacity:.35}}
+
+/* ── Section base ── */
+section{padding:80px 28px}
+section .title{text-align:center;margin-bottom:56px}
+section .title h2{
+  font-family:var(--font-display);font-size:clamp(1.8rem,3.5vw,2.6rem);
+  font-weight:500;letter-spacing:-.015em;margin-bottom:12px;
+}
+section .title p{color:var(--text-muted);font-size:1rem;max-width:540px;margin:0 auto}
+
+/* ── Features ── */
+#features{background:var(--surface)}
+.features-grid{
+  max-width:var(--container);margin:0 auto;
+  display:grid;grid-template-columns:repeat(3,1fr);gap:24px;
+}
+.feature-card{
+  padding:36px 28px;border-radius:var(--radius);
+  background:var(--bg);border:1px solid var(--border);
+  transition:all .4s;cursor:default;position:relative;overflow:hidden;
+  opacity:0;animation:fadeUp .6s forwards;
+}
+.feature-card:nth-child(1){animation-delay:.2s}
+.feature-card:nth-child(2){animation-delay:.35s}
+.feature-card:nth-child(3){animation-delay:.5s}
+.feature-card::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:3px;
+  background:var(--primary);transform:scaleX(0);transform-origin:left;
+  transition:transform .5s;
+}
+.feature-card:hover::before{transform:scaleX(1)}
+.feature-card:hover{transform:translateY(-4px);box-shadow:var(--shadow)}
+.feature-card .icon{
+  width:44px;height:44px;border-radius:12px;
+  display:flex;align-items:center;justify-content:center;
+  margin-bottom:16px;font-size:1.2rem;
+}
+.feature-card:nth-child(1) .icon{background:#e8f3ed;color:var(--primary)}
+.feature-card:nth-child(2) .icon{background:#fef3e9;color:#b8864e}
+.feature-card:nth-child(3) .icon{background:var(--accent-light);color:var(--accent)}
+.feature-card h3{font-family:var(--font-display);font-size:1.2rem;font-weight:600;margin-bottom:8px}
+.feature-card p{font-size:.875rem;color:var(--text-muted);line-height:1.65}
+
+/* ── Upload ── */
+#upload{max-width:720px;margin:0 auto}
+.drop-zone{
+  border:2px dashed var(--border);border-radius:var(--radius);
+  padding:56px 28px;text-align:center;cursor:pointer;
+  transition:all .35s;background:var(--surface);position:relative;
+}
+.drop-zone:hover,.drop-zone.dragover{
+  border-color:var(--primary);background:var(--primary-light);
+}
+.drop-zone .icon{font-size:2.4rem;margin-bottom:12px;opacity:.5}
+.drop-zone h3{font-family:var(--font-display);font-size:1.2rem;font-weight:500;margin-bottom:6px}
+.drop-zone p{color:var(--text-muted);font-size:.85rem}
+.drop-zone input[type=file]{display:none}
+.drop-zone .formats{color:var(--text-muted);font-size:.75rem;margin-top:8px;opacity:.6}
+
+/* ── Results ── */
+#results{max-width:var(--container);margin:0 auto;display:none}
+#results.visible{display:block;animation:fadeUp .5s forwards}
+.result-grid{
+  display:grid;grid-template-columns:1fr 1fr;gap:24px;
+}
+.result-card{
+  background:var(--surface);border-radius:var(--radius);
+  padding:28px;border:1px solid var(--border);
+}
+.result-card.full{grid-column:1/-1}
+.result-card h3{
+  font-family:var(--font-display);font-size:1rem;font-weight:600;
+  margin-bottom:16px;display:flex;align-items:center;gap:8px;
+}
+.result-card h3 .dot{
+  width:8px;height:8px;border-radius:50%;display:inline-block;
+}
+
+/* ── Parameter Cards ── */
+.param-cards{display:flex;flex-direction:column;gap:14px}
+.param-card{
+  border:1px solid var(--border);border-radius:var(--radius-sm);
+  overflow:hidden;transition:box-shadow .25s;
+}
+.param-card:hover{box-shadow:0 4px 16px rgba(0,0,0,.06)}
+.param-card-header{
+  display:flex;align-items:center;gap:12px;
+  padding:14px 16px;cursor:pointer;
+  background:var(--surface);
+  user-select:none;
+}
+.param-card-header:hover{background:#fafafa}
+.param-status-badge{
+  padding:4px 12px;border-radius:100px;font-size:.75rem;font-weight:600;
+  flex-shrink:0;white-space:nowrap;
+}
+.badge-normal{background:var(--primary-light);color:var(--primary)}
+.badge-high{background:#fce8e4;color:#b83c2b}
+.badge-low{background:#fff9e6;color:#8a6000}
+.param-name-block{flex:1;min-width:0}
+.param-name-th{font-weight:600;font-size:.9rem;color:var(--text)}
+.param-name-en{font-size:.75rem;color:var(--text-muted)}
+.param-value-block{text-align:right;flex-shrink:0}
+.param-value{font-family:var(--font-display);font-size:1.15rem;font-weight:600;color:var(--text)}
+.param-value.value-high{color:#b83c2b}
+.param-value.value-low{color:#8a6000}
+.param-unit{font-size:.72rem;color:var(--text-muted)}
+.param-card-body{
+  padding:0 16px;max-height:0;overflow:hidden;
+  transition:max-height .35s ease, padding .35s ease;
+  background:#fafbfc;border-top:0 solid var(--border);
+}
+.param-card-body.open{
+  max-height:300px;padding:14px 16px;
+  border-top:1px solid var(--border);
+}
+.param-detail-row{
+  display:flex;gap:8px;align-items:flex-start;
+  margin-bottom:10px;font-size:.83rem;line-height:1.55;
+}
+.param-detail-row:last-child{margin-bottom:0}
+.param-detail-icon{font-size:1rem;flex-shrink:0;margin-top:1px}
+.param-detail-text{color:var(--text-muted)}
+.param-detail-text strong{color:var(--text);font-weight:600}
+.param-range-bar{
+  margin:10px 0;height:8px;background:var(--border);border-radius:4px;
+  position:relative;overflow:visible;
+}
+.param-range-fill{
+  position:absolute;top:0;height:100%;border-radius:4px;
+  background:var(--primary);opacity:.25;
+}
+.param-range-marker{
+  position:absolute;top:-4px;width:4px;height:16px;
+  border-radius:2px;background:var(--text);transform:translateX(-50%);
+}
+.param-range-marker.marker-high{background:#b83c2b}
+.param-range-marker.marker-low{background:#8a6000}
+.param-chevron{
+  font-size:.7rem;color:var(--text-muted);flex-shrink:0;
+  transition:transform .3s;
+}
+.param-chevron.open{transform:rotate(180deg)}
+
+/* ── Chat ── */
+#chat{max-width:720px;margin:0 auto}
+.chat-box{
+  background:var(--surface);border-radius:var(--radius);
+  border:1px solid var(--border);overflow:hidden;
+}
+.chat-header{
+  padding:16px 24px;border-bottom:1px solid var(--border);
+  display:flex;align-items:center;gap:10px;
+  font-family:var(--font-display);font-weight:500;font-size:.95rem;
+}
+.chat-header .status{width:8px;height:8px;border-radius:50%;background:var(--primary);animation:pulseDot 1.8s infinite}
+.chat-messages{
+  height:340px;overflow-y:auto;padding:24px;
+  display:flex;flex-direction:column;gap:12px;
+}
+.chat-messages .msg{
+  max-width:82%;padding:12px 16px;border-radius:14px;
+  font-size:.875rem;line-height:1.55;animation:fadeUp .3s forwards;
+}
+.chat-messages .msg.bot{
+  align-self:flex-start;background:var(--bg);
+  border-bottom-left-radius:4px;
+}
+.chat-messages .msg.user{
+  align-self:flex-end;background:var(--primary);color:#fff;
+  border-bottom-right-radius:4px;
+}
+.chat-input{
+  display:flex;gap:8px;padding:12px 16px;border-top:1px solid var(--border);
+}
+.chat-input input{
+  flex:1;padding:10px 16px;border:1px solid var(--border);
+  border-radius:100px;font-family:var(--font-body);font-size:.875rem;
+  outline:none;transition:border .3s;background:var(--bg);
+}
+.chat-input input:focus{border-color:var(--primary)}
+.chat-input button{
+  width:40px;height:40px;border-radius:50%;border:none;
+  background:var(--primary);color:#fff;cursor:pointer;
+  transition:all .3s;font-size:1rem;display:flex;align-items:center;justify-content:center;
+}
+.chat-input button:hover{background:var(--primary-dark);transform:scale(1.05)}
+
+/* ── Footer ── */
+footer{
+  text-align:center;padding:40px 28px;
+  color:var(--text-muted);font-size:.8rem;
+  border-top:1px solid var(--border);
+}
+
+/* ── Animations ── */
+@keyframes fadeUp{
+  from{opacity:0;transform:translateY(20px)}
+  to{opacity:1;transform:translateY(0)}
+}
+
+/* ── Responsive ── */
+@media(max-width:900px){
+  .hero{grid-template-columns:1fr;gap:40px;padding-bottom:40px}
+  .hero-text p{max-width:none}
+  .features-grid{grid-template-columns:1fr}
+  .result-grid{grid-template-columns:1fr}
+  nav .links{display:none}
+}
+@media(max-width:540px){
+  .hero-text .cta-group{flex-direction:column}
+  .hero{padding-top:calc(var(--nav-h) + 40px)}
+  section{padding:48px 20px}
+  .hero-card .stat-row{flex-direction:column}
+}
+</style>
+</head>
+<body>
+
+<!-- Navigation -->
+<nav>
+  <div class="inner">
+    <div class="logo">Medi<span style="font-weight:300">Lens</span> <mark>BETA</mark></div>
+    <ul class="links">
+      <li><a href="#features">ความสามารถ</a></li>
+      <li><a href="#upload">อัปโหลด</a></li>
+      <li><a href="#chat">สอบถาม</a></li>
+    </ul>
+  </div>
+</nav>
+
+<!-- Hero -->
+<section class="hero">
+  <div class="hero-text">
+    <h1>เข้าใจผลตรวจ<br>สุขภาพของคุณ <em>ด้วย AI</em></h1>
+    <p>MediLens ใช้ OCR และ NLP อัจฉริยะ เพื่อแปลงรายงานทางการแพทย์ให้เป็นภาษาเข้าใจง่าย พร้อมให้คุณสอบถามข้อสงสัยกับ AI ได้ทันที</p>
+    <div class="cta-group">
+      <a href="#upload" class="cta-primary">↑ อัปโหลดผลตรวจ</a>
+      <a href="#features" class="cta-secondary">ดูความสามารถ</a>
+    </div>
+  </div>
+  <div class="hero-visual">
+    <div class="hero-card">
+      <div style="font-size:.72rem;text-transform:uppercase;letter-spacing:.08em;color:var(--text-muted);margin-bottom:18px;font-weight:500">วิธีการทำงาน</div>
+      <div class="how-step">
+        <div class="how-step-num">1</div>
+        <div>
+          <div class="how-step-title">อัปโหลดผลตรวจ</div>
+          <div class="how-step-desc">PDF หรือรูปภาพจากโรงพยาบาล</div>
+        </div>
+      </div>
+      <div class="how-connector"></div>
+      <div class="how-step">
+        <div class="how-step-num">2</div>
+        <div>
+          <div class="how-step-title">AI อ่านและวิเคราะห์</div>
+          <div class="how-step-desc">OCR ดึงข้อมูล → Typhoon AI แปลผล</div>
+        </div>
+      </div>
+      <div class="how-connector"></div>
+      <div class="how-step">
+        <div class="how-step-num">3</div>
+        <div>
+          <div class="how-step-title">รับผลที่เข้าใจง่าย</div>
+          <div class="how-step-desc">ค่าแต่ละตัว + คำอธิบาย + คำแนะนำ</div>
+        </div>
+      </div>
+      <div class="how-connector"></div>
+      <div class="how-step">
+        <div class="how-step-num">4</div>
+        <div>
+          <div class="how-step-title">ถามผู้ช่วย AI ได้เลย</div>
+          <div class="how-step-desc">สอบถามข้อสงสัยเพิ่มเติมแบบ chat</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Features -->
+<section id="features">
+  <div class="title">
+    <h2>เทคโนโลยีเบื้องหลัง</h2>
+    <p>สามกลไก AI ที่ทำงานร่วมกันเพื่อให้คุณเข้าใจสุขภาพของตัวเองอย่างง่ายดาย</p>
+  </div>
+  <div class="features-grid">
+    <div class="feature-card">
+      <div class="icon">🔍</div>
+      <h3>OCR อัจฉริยะ</h3>
+      <p>สแกนและอ่านข้อมูลจากไฟล์ผลตรวจทุกรูปแบบ ไม่ว่าจะเป็น PDF, รูปถ่าย หรือเอกสารที่สแกนมา ด้วยเทคโนโลยี Optical Character Recognition ที่แม่นยำสูง</p>
+    </div>
+    <div class="feature-card">
+      <div class="icon">🧠</div>
+      <h3>NLP วิเคราะห์ผล</h3>
+      <p>Natural Language Processing แปลงค่าตัวเลขทางการแพทย์ให้เป็นภาษาไทยที่เข้าใจง่าย พร้อมเปรียบเทียบกับค่าปกติและให้ข้อมูลเบื้องต้น</p>
+    </div>
+    <div class="feature-card">
+      <div class="icon">💬</div>
+      <h3>AI ให้คำปรึกษา</h3>
+      <p>สอบถามข้อสงสัยเกี่ยวกับผลตรวจของคุณกับ AI chatbot ที่ผ่านการเทรนด้วยข้อมูลทางการแพทย์ ตอบทุกคำถามอย่างถูกต้องและเข้าใจง่าย</p>
+    </div>
+  </div>
+</section>
+
+<!-- Upload -->
+<section id="upload">
+  <div class="title">
+    <h2>อัปโหลดผลตรวจของคุณ</h2>
+    <p>รองรับไฟล์ PDF, JPG, PNG — ระบบ OCR จะดึงข้อมูลและวิเคราะห์ให้อัตโนมัติ</p>
+  </div>
+  <div class="drop-zone" id="dropZone">
+    <div class="icon">📄</div>
+    <h3>ลากไฟล์มาวางที่นี่</h3>
+    <p>หรือคลิกเพื่อเลือกไฟล์</p>
+    <p class="formats">รองรับ PDF, PNG, JPG (สูงสุด 10MB)</p>
+    <input type="file" id="fileInput" accept=".pdf,.png,.jpg,.jpeg">
+  </div>
+</section>
+
+<!-- Results -->
+<section id="results">
+  <div class="title">
+    <h2>ผลการวิเคราะห์</h2>
+    <p id="fileName"></p>
+  </div>
+  <div class="result-grid">
+    <div class="result-card full">
+      <h3><span class="dot" style="background:var(--primary)"></span> สรุปผลโดย AI</h3>
+      <p style="font-size:.9rem;color:var(--text-muted);line-height:1.7" id="aiSummary">กำลังรอผลการวิเคราะห์...</p>
+    </div>
+    <div class="result-card full" id="paramsContainer">
+      <h3><span class="dot" style="background:var(--primary)"></span> ค่าที่ตรวจพบ</h3>
+      <div id="paramsTableWrap"><p style="color:var(--text-muted);font-size:.85rem">รอข้อมูล...</p></div>
+    </div>
+    <div class="result-card" style="text-align:center;padding:20px">
+      <p style="font-size:.85rem;color:var(--text-muted);margin-bottom:8px">มีข้อสงสัยเกี่ยวกับผลตรวจ?</p>
+      <a href="#chat" class="cta-primary" style="display:inline-flex">💬 ถาม AI</a>
+    </div>
+  </div>
+</section>
+
+<!-- Chat -->
+<section id="chat">
+  <div class="title">
+    <h2>สอบถามกับ AI</h2>
+    <p>ถามทุกอย่างที่สงสัยเกี่ยวกับผลตรวจของคุณ — AI พร้อมตอบอย่างเข้าใจง่าย</p>
+  </div>
+  <div class="chat-box">
+    <div class="chat-header">
+      <span class="status"></span> MediLens Assistant
+      <span style="flex:1"></span>
+      <span style="font-size:.75rem;color:var(--text-muted);font-family:var(--font-body);font-weight:400">ใช้ NLP + LLM</span>
+    </div>
+    <div class="chat-messages" id="chatMessages">
+      <div class="msg bot">สวัสดีครับ 👋 ผมคือ MediLens Assistant ยินดีให้คำแนะนำเกี่ยวกับผลตรวจสุขภาพของคุณ มีอะไรให้ช่วยไหมครับ?</div>
+    </div>
+    <div class="chat-input">
+      <input type="text" id="chatInput" placeholder="พิมพ์คำถามของคุณ..." autocomplete="off">
+      <button id="chatSend">→</button>
+    </div>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer>
+  MediLens — เข้าใจผลตรวจสุขภาพของคุณ ด้วย AI &bull; ข้อมูลทั้งหมดเป็นตัวอย่างเพื่อการสาธิตเท่านั้น
+</footer>
+
+<script>
+// ── State ──
+let currentOcrText = '';
+
+// ── DOM refs ──
+const dropZone = document.getElementById('dropZone');
+const fileInput = document.getElementById('fileInput');
+const resultsSec = document.getElementById('results');
+const fileNameEl = document.getElementById('fileName');
+const aiSummary = document.getElementById('aiSummary');
+const paramsWrap = document.getElementById('paramsTableWrap');
+const chatMessages = document.getElementById('chatMessages');
+const chatInput = document.getElementById('chatInput');
+const chatSend = document.getElementById('chatSend');
+
+// ── Helpers ──
+function loadingUI(name) {
+  dropZone.innerHTML = `
+    <div style="font-size:2.4rem;margin-bottom:8px">⏳</div>
+    <h3>${name}</h3>
+    <p style="color:var(--text-muted);font-size:.85rem">ส่งไปยัง OCR & Typhoon NLP ...</p>
+    <div style="margin-top:16px;width:200px;margin-inline:auto;height:4px;background:var(--border);border-radius:4px;overflow:hidden">
+      <div style="height:100%;width:0%;background:var(--primary);border-radius:4px;transition:width 2.5s" id="progressBar"></div>
+    </div>`;
+  setTimeout(() => { const p = document.getElementById('progressBar'); if(p) p.style.width = '100%'; }, 100);
+}
+
+function resetDropZone() {
+  dropZone.innerHTML = `
+    <div class="icon">📄</div>
+    <h3>ลากไฟล์มาวางที่นี่</h3>
+    <p>หรือคลิกเพื่อเลือกไฟล์</p>
+    <p class="formats">รองรับ PDF, PNG, JPG (สูงสุด 10MB)</p>`;
+  dropZone.appendChild(fileInput);
+}
+
+function addMessage(text, role) {
+  const div = document.createElement('div');
+  div.className = 'msg ' + role;
+  div.textContent = text;
+  chatMessages.appendChild(div);
+  chatMessages.scrollTop = chatMessages.scrollHeight;
+}
+
+function renderParams(params) {
+  if (!params || params.length === 0) {
+    paramsWrap.innerHTML = '<p style="color:var(--text-muted);font-size:.85rem">ไม่พบข้อมูลพารามิเตอร์</p>';
+    return;
+  }
+
+  const statusMap = {
+    normal: { badge: 'badge-normal', valueClass: '', label: '✓ ปกติ' },
+    high:   { badge: 'badge-high',   valueClass: 'value-high', label: '↑ สูงกว่าปกติ' },
+    low:    { badge: 'badge-low',    valueClass: 'value-low',  label: '↓ ต่ำกว่าปกติ' },
+    abnormal: { badge: 'badge-high', valueClass: 'value-high', label: '⚠ ผิดปกติ' },
+  };
+
+  const cards = params.map((p, i) => {
+    const st = statusMap[p.status] || statusMap.normal;
+    const markerClass = p.status === 'high' ? 'marker-high' : p.status === 'low' ? 'marker-low' : '';
+
+    const detailRows = [
+      p.what_is_it ? `<div class="param-detail-row"><span class="param-detail-icon">🔬</span><span class="param-detail-text">${p.what_is_it}</span></div>` : '',
+      `<div class="param-detail-row"><span class="param-detail-icon">📏</span><span class="param-detail-text"><strong>ค่าปกติ:</strong> ${p.normal_range} ${p.unit || ''}</span></div>`,
+      p.verdict ? `<div class="param-detail-row"><span class="param-detail-icon">📋</span><span class="param-detail-text"><strong>ผลของคุณ:</strong> ${p.verdict}</span></div>` : '',
+      p.tip ? `<div class="param-detail-row"><span class="param-detail-icon">💡</span><span class="param-detail-text">${p.tip}</span></div>` : '',
+    ].join('');
+
+    return `
+      <div class="param-card">
+        <div class="param-card-header" onclick="toggleParam(${i})">
+          <div class="param-name-block">
+            <div class="param-name-th">${p.name_th || p.name}</div>
+            <div class="param-name-en">${p.name}</div>
+          </div>
+          <div class="param-value-block">
+            <div class="param-value ${st.valueClass}">${p.value}</div>
+            <div class="param-unit">${p.unit || ''}</div>
+          </div>
+          <span class="param-status-badge ${st.badge}">${st.label}</span>
+          <span class="param-chevron" id="chev-${i}">▼</span>
+        </div>
+        <div class="param-card-body" id="body-${i}">
+          ${detailRows}
+        </div>
+      </div>`;
+  }).join('');
+
+  paramsWrap.innerHTML = `<div class="param-cards">${cards}</div>`;
+}
+
+function toggleParam(i) {
+  const body = document.getElementById('body-' + i);
+  const chev = document.getElementById('chev-' + i);
+  const isOpen = body.classList.contains('open');
+  body.classList.toggle('open', !isOpen);
+  chev.classList.toggle('open', !isOpen);
+}
+
+// ── File Upload ──
+dropZone.addEventListener('click', () => fileInput.click());
+
+dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('dragover'); });
+dropZone.addEventListener('dragleave', () => dropZone.classList.remove('dragover'));
+dropZone.addEventListener('drop', e => {
+  e.preventDefault();
+  dropZone.classList.remove('dragover');
+  if (e.dataTransfer.files.length) handleFile(e.dataTransfer.files[0]);
+});
+fileInput.addEventListener('change', () => {
+  if (fileInput.files.length) handleFile(fileInput.files[0]);
+});
+
+async function handleFile(file) {
+  if (!file) return;
+  loadingUI(file.name);
+
+  const formData = new FormData();
+  formData.append('file', file);
+
+  try {
+    // 1. Upload + OCR
+    const uploadRes = await fetch('/api/upload', { method: 'POST', body: formData });
+    if (!uploadRes.ok) throw new Error('Upload failed');
+    const uploadData = await uploadRes.json();
+    currentOcrText = uploadData.ocr_text || '';
+
+    // 2. Analyze with Typhoon NLP
+    const analyzeRes = await fetch('/api/analyze', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ ocr_text: currentOcrText }),
+    });
+    const analyzeData = await analyzeRes.json();
+
+    // 3. Render
+    resultsSec.classList.add('visible');
+    fileNameEl.textContent = 'ไฟล์: ' + file.name;
+    aiSummary.textContent = analyzeData.summary || 'ไม่สามารถสรุปผลได้';
+    renderParams(analyzeData.parameters);
+    resultsSec.scrollIntoView({ behavior: 'smooth' });
+    resetDropZone();
+  } catch (err) {
+    // fallback mock result
+    resultsSec.classList.add('visible');
+    fileNameEl.textContent = 'ไฟล์: ' + file.name + ' (ตัวอย่าง)';
+    aiSummary.textContent = 'ผลตรวจโดยรวมอยู่ในเกณฑ์ปกติ มีเพียงค่าน้ำตาลและฮีมาโตคริตที่ควรติดตาม';
+    renderParams([
+      {
+        name: 'RBC', name_th: 'เม็ดเลือดแดง', value: '5.2', unit: 'M/µL',
+        status: 'normal', normal_range: '4.5–5.9',
+        what_is_it: 'เม็ดเลือดแดงทำหน้าที่ขนออกซิเจนจากปอดไปเลี้ยงทุกส่วนของร่างกาย',
+        verdict: 'ปกติ — ค่าอยู่ในเกณฑ์ดี ร่างกายได้รับออกซิเจนเพียงพอ',
+        tip: 'กินอาหารที่มีธาตุเหล็กสูง เช่น เนื้อแดง ผักโขม เพื่อรักษาระดับนี้ไว้'
+      },
+      {
+        name: 'WBC', name_th: 'เม็ดเลือดขาว', value: '7.8', unit: 'K/µL',
+        status: 'normal', normal_range: '4.5–11.0',
+        what_is_it: 'เม็ดเลือดขาวเป็นทหารของร่างกาย ทำหน้าที่ต่อสู้กับเชื้อโรคและสิ่งแปลกปลอม',
+        verdict: 'ปกติ — ระบบภูมิคุ้มกันทำงานได้ดี',
+        tip: 'นอนหลับพักผ่อนให้เพียงพอ 7–8 ชั่วโมง/คืน เพื่อรักษาภูมิคุ้มกัน'
+      },
+      {
+        name: 'HGB', name_th: 'ฮีโมโกลบิน', value: '14.2', unit: 'g/dL',
+        status: 'normal', normal_range: '13.5–17.5',
+        what_is_it: 'ฮีโมโกลบินคือโปรตีนในเม็ดเลือดแดงที่จับออกซิเจน ถ้าต่ำแสดงว่าโลหิตจาง',
+        verdict: 'ปกติ — ไม่มีภาวะโลหิตจาง',
+        tip: 'กินวิตามิน C ร่วมกับอาหารที่มีธาตุเหล็กเพื่อช่วยดูดซึมได้ดีขึ้น'
+      },
+      {
+        name: 'HCT', name_th: 'ฮีมาโตคริต', value: '48', unit: '%',
+        status: 'high', normal_range: '41–53',
+        what_is_it: 'ฮีมาโตคริตบอกว่าเม็ดเลือดแดงมีสัดส่วนเท่าไหร่ในเลือดทั้งหมด ถ้าสูงเลือดอาจข้นขึ้น',
+        verdict: 'สูงกว่าปกติเล็กน้อย — ควรดื่มน้ำให้เพียงพอ',
+        tip: 'ดื่มน้ำให้ได้อย่างน้อย 8 แก้ว/วัน เพื่อลดความข้นของเลือด'
+      },
+      {
+        name: 'PLT', name_th: 'เกล็ดเลือด', value: '245', unit: 'K/µL',
+        status: 'normal', normal_range: '150–400',
+        what_is_it: 'เกล็ดเลือดช่วยให้เลือดหยุดไหลเมื่อมีบาดแผล ถ้าน้อยเกินอาจเลือดออกง่าย',
+        verdict: 'ปกติ — การแข็งตัวของเลือดทำงานได้ดี',
+        tip: 'หลีกเลี่ยงยาแอสไพรินหรือยาต้านเกล็ดเลือดโดยไม่จำเป็น'
+      },
+      {
+        name: 'GLU', name_th: 'น้ำตาลในเลือด', value: '112', unit: 'mg/dL',
+        status: 'high', normal_range: '70–100',
+        what_is_it: 'น้ำตาลในเลือดวัดพลังงานหลักของร่างกาย ถ้าสูงเรื้อรังอาจเสี่ยงเบาหวาน',
+        verdict: 'สูงกว่าปกติ — อยู่ในโซนก่อนเบาหวาน ควรปรับพฤติกรรม',
+        tip: 'ลดน้ำตาล แป้งขัดขาว และเพิ่มการออกกำลังกายอย่างน้อย 30 นาที/วัน'
+      },
+    ]);
+    resultsSec.scrollIntoView({ behavior: 'smooth' });
+    resetDropZone();
+  }
+}
+
+// ── Chat ──
+async function handleSend() {
+  const text = chatInput.value.trim();
+  if (!text) return;
+  addMessage(text, 'user');
+  chatInput.value = '';
+
+  try {
+    const res = await fetch('/api/chat', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ question: text, context: currentOcrText }),
+    });
+    if (!res.ok) throw new Error('server_error');
+    const data = await res.json();
+    if (data.success) {
+      addMessage(data.response, 'bot');
+    } else {
+      addMessage('ขออภัยครับ AI ไม่สามารถตอบได้ในขณะนี้ กรุณาลองอีกครั้ง', 'bot');
+    }
+  } catch (err) {
+    const isNetworkErr = err instanceof TypeError || err.message === 'Failed to fetch';
+    addMessage(
+      isNetworkErr
+        ? 'เซิร์ฟเวอร์ไม่ตอบสนอง — กรุณาเปิด start_server.bat แล้วรีเฟรชหน้านี้'
+        : 'ขออภัยครับ เกิดข้อผิดพลาด กรุณาลองอีกครั้ง',
+      'bot'
+    );
+  }
+}
+
+// ── Server health check on load ──
+async function checkServerStatus() {
+  const dot = document.querySelector('.chat-header .status');
+  try {
+    const res = await fetch('/api/health');
+    if (res.ok) {
+      dot.style.background = 'var(--primary)';
+      dot.title = 'เซิร์ฟเวอร์พร้อมใช้งาน';
+    } else { throw new Error(); }
+  } catch {
+    dot.style.background = '#d4735e';
+    dot.title = 'เซิร์ฟเวอร์ไม่ตอบสนอง';
+    addMessage('⚠️ เซิร์ฟเวอร์ไม่ตอบสนอง — กรุณาเปิด start_server.bat ก่อนใช้งาน', 'bot');
+  }
+}
+checkServerStatus();
+
+chatSend.addEventListener('click', handleSend);
+chatInput.addEventListener('keydown', e => { if (e.key === 'Enter') handleSend(); });
+</script>
+</body>
+</html>

@@ -1,0 +1,17 @@
+# Environment & secrets
+backend/.env
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+venv/
+env/
+
+# EasyOCR model cache (ใหญ่มาก ~500MB)
+.EasyOCR/
+
+# OS
+.DS_Store
+Thumbs.db
