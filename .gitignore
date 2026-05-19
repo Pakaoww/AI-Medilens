@@ -12,6 +12,9 @@ env/
 # EasyOCR model cache (ใหญ่มาก ~500MB)
 .EasyOCR/
 
+# Claude Code local config
+.claude/
+
 # OS
 .DS_Store
 Thumbs.db
