@@ -547,6 +547,14 @@ function resetDropZone() {
   dropZone.appendChild(fileInput);
 }
 
+function resetChat(greeting) {
+  chatMessages.innerHTML = '';
+  const div = document.createElement('div');
+  div.className = 'msg bot';
+  div.innerHTML = greeting;
+  chatMessages.appendChild(div);
+}
+
 function addMessage(text, role) {
   const div = document.createElement('div');
   div.className = 'msg ' + role;
@@ -653,6 +661,7 @@ async function handleFile(file) {
     renderParams(analyzeData.parameters);
     resultsSec.scrollIntoView({ behavior: 'smooth' });
     resetDropZone();
+    resetChat('วิเคราะห์ไฟล์ <strong>' + file.name + '</strong> เสร็จแล้วครับ 🎉 มีคำถามเกี่ยวกับผลตรวจไหมครับ?');
   } catch (err) {
     // fallback mock result
     resultsSec.classList.add('visible');
