@@ -117,7 +117,7 @@ async def health():
     return {
         "status": "ok",
         "typhoon_available": get_typhoon().is_available(),
-        "ocr_loaded": ocr is not None and ocr._reader is not None,
+        "ocr_available": get_ocr().client is not None,
     }
 
 

@@ -1,55 +1,81 @@
 import os
-import io
-import tempfile
+import base64
+import logging
 from pathlib import Path
-
-import numpy as np
-from PIL import Image
+from openai import OpenAI
 
 
 class OCRService:
-    """OCR service using EasyOCR for Thai + English text extraction.
-    Falls back to PyMuPDF for text extraction from PDFs.
-    """
+    """OCR via Typhoon OCR API. Falls back to PyMuPDF text layer for PDFs."""
 
     def __init__(self):
-        self._reader = None
+        self.api_key = os.getenv("TYPHOON_API_KEY")
+        self.model = os.getenv("TYPHOON_OCR_MODEL", "typhoon-ocr-v1.5")
+        self._client = None
 
     @property
-    def reader(self):
-        if self._reader is None:
-            import easyocr
-            self._reader = easyocr.Reader(["th", "en"], gpu=False)
-        return self._reader
+    def client(self) -> OpenAI:
+        if self._client is None and self.api_key:
+            self._client = OpenAI(
+                api_key=self.api_key,
+                base_url="https://api.opentyphoon.ai/v1",
+            )
+        return self._client
 
-    def extract_from_image(self, img_bytes: bytes) -> str:
-        img = Image.open(io.BytesIO(img_bytes))
-        if img.mode != "RGB":
-            img = img.convert("RGB")
-
-        arr = np.array(img)
-        results = self.reader.readtext(arr)
-        lines = [r[1] for r in results]
-        return "\n".join(lines)
+    def _ocr_image_bytes(self, img_bytes: bytes, mime: str = "image/jpeg") -> str:
+        b64 = base64.b64encode(img_bytes).decode()
+        resp = self.client.chat.completions.create(
+            model=self.model,
+            messages=[
+                {
+                    "role": "user",
+                    "content": [
+                        {
+                            "type": "image_url",
+                            "image_url": {"url": f"data:{mime};base64,{b64}"},
+                        },
+                        {
+                            "type": "text",
+                            "text": (
+                                "Extract all text from this medical lab report image. "
+                                "Return only the raw extracted text, preserving numbers and units. "
+                                "Do not interpret or summarize."
+                            ),
+                        },
+                    ],
+                }
+            ],
+            max_tokens=2000,
+        )
+        import re
+        text = resp.choices[0].message.content or ""
+        # Strip Typhoon OCR header like "**OCR Detected Words:** "
+        text = re.sub(r"^\*\*OCR[^:]*:\*\*\s*", "", text).strip()
+        return text
 
     def extract_from_pdf(self, pdf_bytes: bytes) -> str:
         import fitz
 
         doc = fitz.open(stream=pdf_bytes, filetype="pdf")
-        raw_text = "".join(page.get_text() for page in doc)
 
-        # If direct text extraction yields very little, render pages and OCR
-        if len(raw_text.strip()) < 50:
-            raw_text = ""
-            for page in doc:
-                pix = page.get_pixmap(dpi=200)
-                raw_text += self.extract_from_image(pix.tobytes("png")) + "\n"
+        # Try native text layer first (fast, no API call needed)
+        raw = "".join(page.get_text() for page in doc)
+        if len(raw.strip()) >= 50:
+            doc.close()
+            return raw.strip()
 
+        # Scanned PDF — render each page and OCR via Typhoon
+        texts = []
+        for page in doc:
+            pix = page.get_pixmap(dpi=200)
+            texts.append(self._ocr_image_bytes(pix.tobytes("png"), "image/png"))
         doc.close()
-        return raw_text.strip()
+        return "\n".join(texts).strip()
 
     def extract_text(self, file_bytes: bytes, filename: str) -> str:
         ext = Path(filename).suffix.lower()
         if ext == ".pdf":
             return self.extract_from_pdf(file_bytes)
-        return self.extract_from_image(file_bytes)
+
+        mime_map = {".jpg": "image/jpeg", ".jpeg": "image/jpeg", ".png": "image/png"}
+        return self._ocr_image_bytes(file_bytes, mime_map.get(ext, "image/jpeg"))
