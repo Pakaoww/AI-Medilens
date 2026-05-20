@@ -707,56 +707,22 @@ async function handleFile(file) {
     resetDropZone();
     resetChat('วิเคราะห์ไฟล์ <strong>' + file.name + '</strong> เสร็จแล้วครับ 🎉 มีคำถามเกี่ยวกับผลตรวจไหมครับ?');
   } catch (err) {
-    // fallback mock result
-    resultsSec.classList.add('visible');
-    fileNameEl.textContent = 'ไฟล์: ' + file.name + ' (ตัวอย่าง)';
-    aiSummary.textContent = 'ผลตรวจโดยรวมอยู่ในเกณฑ์ปกติ มีเพียงค่าน้ำตาลและฮีมาโตคริตที่ควรติดตาม';
-    renderParams([
-      {
-        name: 'RBC', name_th: 'เม็ดเลือดแดง', value: '5.2', unit: 'M/µL',
-        status: 'normal', normal_range: '4.5–5.9',
-        what_is_it: 'เม็ดเลือดแดงทำหน้าที่ขนออกซิเจนจากปอดไปเลี้ยงทุกส่วนของร่างกาย',
-        verdict: 'ปกติ — ค่าอยู่ในเกณฑ์ดี ร่างกายได้รับออกซิเจนเพียงพอ',
-        tip: 'กินอาหารที่มีธาตุเหล็กสูง เช่น เนื้อแดง ผักโขม เพื่อรักษาระดับนี้ไว้'
-      },
-      {
-        name: 'WBC', name_th: 'เม็ดเลือดขาว', value: '7.8', unit: 'K/µL',
-        status: 'normal', normal_range: '4.5–11.0',
-        what_is_it: 'เม็ดเลือดขาวเป็นทหารของร่างกาย ทำหน้าที่ต่อสู้กับเชื้อโรคและสิ่งแปลกปลอม',
-        verdict: 'ปกติ — ระบบภูมิคุ้มกันทำงานได้ดี',
-        tip: 'นอนหลับพักผ่อนให้เพียงพอ 7–8 ชั่วโมง/คืน เพื่อรักษาภูมิคุ้มกัน'
-      },
-      {
-        name: 'HGB', name_th: 'ฮีโมโกลบิน', value: '14.2', unit: 'g/dL',
-        status: 'normal', normal_range: '13.5–17.5',
-        what_is_it: 'ฮีโมโกลบินคือโปรตีนในเม็ดเลือดแดงที่จับออกซิเจน ถ้าต่ำแสดงว่าโลหิตจาง',
-        verdict: 'ปกติ — ไม่มีภาวะโลหิตจาง',
-        tip: 'กินวิตามิน C ร่วมกับอาหารที่มีธาตุเหล็กเพื่อช่วยดูดซึมได้ดีขึ้น'
-      },
-      {
-        name: 'HCT', name_th: 'ฮีมาโตคริต', value: '48', unit: '%',
-        status: 'high', normal_range: '41–53',
-        what_is_it: 'ฮีมาโตคริตบอกว่าเม็ดเลือดแดงมีสัดส่วนเท่าไหร่ในเลือดทั้งหมด ถ้าสูงเลือดอาจข้นขึ้น',
-        verdict: 'สูงกว่าปกติเล็กน้อย — ควรดื่มน้ำให้เพียงพอ',
-        tip: 'ดื่มน้ำให้ได้อย่างน้อย 8 แก้ว/วัน เพื่อลดความข้นของเลือด'
-      },
-      {
-        name: 'PLT', name_th: 'เกล็ดเลือด', value: '245', unit: 'K/µL',
-        status: 'normal', normal_range: '150–400',
-        what_is_it: 'เกล็ดเลือดช่วยให้เลือดหยุดไหลเมื่อมีบาดแผล ถ้าน้อยเกินอาจเลือดออกง่าย',
-        verdict: 'ปกติ — การแข็งตัวของเลือดทำงานได้ดี',
-        tip: 'หลีกเลี่ยงยาแอสไพรินหรือยาต้านเกล็ดเลือดโดยไม่จำเป็น'
-      },
-      {
-        name: 'GLU', name_th: 'น้ำตาลในเลือด', value: '112', unit: 'mg/dL',
-        status: 'high', normal_range: '70–100',
-        what_is_it: 'น้ำตาลในเลือดวัดพลังงานหลักของร่างกาย ถ้าสูงเรื้อรังอาจเสี่ยงเบาหวาน',
-        verdict: 'สูงกว่าปกติ — อยู่ในโซนก่อนเบาหวาน ควรปรับพฤติกรรม',
-        tip: 'ลดน้ำตาล แป้งขัดขาว และเพิ่มการออกกำลังกายอย่างน้อย 30 นาที/วัน'
-      },
-    ]);
-    resultsSec.scrollIntoView({ behavior: 'smooth' });
     resetDropZone();
+    dropZone.innerHTML = `
+      <div style="font-size:2rem;margin-bottom:10px">🔍</div>
+      <h3 style="color:var(--accent);margin-bottom:6px">อ่านไฟล์ไม่สำเร็จ</h3>
+      <p style="color:var(--text-muted);font-size:.85rem;max-width:320px;margin:0 auto 16px">
+        รูปภาพหรือเอกสารอาจไม่ชัดเจนพอ ลองถ่ายใหม่ให้ชัดขึ้น หรืออัปโหลดไฟล์ PDF แทน
+      </p>
+      <label style="display:inline-flex;align-items:center;gap:8px;padding:10px 22px;
+        border-radius:100px;background:var(--primary);color:#fff;cursor:pointer;
+        font-size:.875rem;font-weight:500;font-family:var(--font-body)">
+        📂 ลองอีกครั้ง
+        <input type="file" id="fileInput" accept=".pdf,.png,.jpg,.jpeg" style="display:none">
+      </label>`;
+    document.getElementById('fileInput').addEventListener('change', e => {
+      if (e.target.files.length) handleFile(e.target.files[0]);
+    });
   }
 }
 
@@ -778,16 +744,10 @@ async function handleSend() {
     if (data.success) {
       addMessage(data.response, 'bot');
     } else {
-      addMessage('ขออภัยครับ AI ไม่สามารถตอบได้ในขณะนี้ กรุณาลองอีกครั้ง', 'bot');
+      addMessage('ขอโทษนะครับ ตอนนี้ไม่สามารถตอบได้ ลองถามใหม่อีกครั้งได้เลยครับ 🙏', 'bot');
     }
   } catch (err) {
-    const isNetworkErr = err instanceof TypeError || err.message === 'Failed to fetch';
-    addMessage(
-      isNetworkErr
-        ? 'เซิร์ฟเวอร์ไม่ตอบสนอง — กรุณาเปิด start_server.bat แล้วรีเฟรชหน้านี้'
-        : 'ขออภัยครับ เกิดข้อผิดพลาด กรุณาลองอีกครั้ง',
-      'bot'
-    );
+    addMessage('ดูเหมือนการเชื่อมต่อมีปัญหาเล็กน้อย รอสักครู่แล้วลองใหม่นะครับ 😊', 'bot');
   }
 }
 
@@ -837,7 +797,7 @@ async function checkServerStatus() {
   } catch {
     dot.style.background = '#d4735e';
     dot.title = 'เซิร์ฟเวอร์ไม่ตอบสนอง';
-    addMessage('⚠️ เซิร์ฟเวอร์ไม่ตอบสนอง — กรุณาเปิด start_server.bat ก่อนใช้งาน', 'bot');
+    addMessage('ดูเหมือนระบบกำลังเริ่มต้น รอสักครู่แล้วลองใหม่อีกครั้งนะครับ ☕', 'bot');
   }
 }
 checkServerStatus();
